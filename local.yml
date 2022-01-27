@@ -1,14 +1,19 @@
-- hosts: localhost
-  connection: local
+# tasks to complete before running roles
+- hosts: all
+  tags: always
   become: true
-
   pre_tasks:
-    - name: Update Repositories
-      apt:
-        update_cache: yes
+    - name: pre-run | Update Repositories
+      tags: always
+      apt: update_cache=yes
       changed_when: False
+      when: ansible_distribution in ["Debian", "Ubuntu"]
 
   tasks:
     - include: tasks/users.yml
     - include: tasks/cron.yml
     - include: tasks/packages.yml
+
+
+# run roles
+
